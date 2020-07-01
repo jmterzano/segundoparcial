@@ -1,0 +1,47 @@
+return function($app){
+    $app->group('/registro', function (RouteCollectorProxy $group) {
+        $group->post('/registro', UsuariosController::class . ':add');
+        $group->post('/login', UsuariosController::class . ':login');
+        $group->post('/mascota', MascotaController::class . ':addMascota')->add(BeforeMiddlewares::class);
+      
+    });
+};
+
+   public function getAll(Request $request, Response $response,$args) {
+       
+        $rta= json_encode(Usuario::all());
+
+        $response->getBody()->write($rta);
+        return $response;
+    }
+
+
+FAIL MIDDLEWARE
+
+ $response= new Response();
+        throw new \Slim\Exception\HttpForbiddenException($request);
+        return $response->withStatus(403);
+
+        ----------------------------------------------------------------MIDDLEWARE
+
+        public function __invoke(Request $request, RequestHandler $handler): Response
+    {
+      
+        $header = getallheaders();
+        $mitoken=$header["token"] ?? " ";
+        $response=$handler->handle($request);
+        $existingContent=(string)$response->getBody();
+
+        if(Token::decodeToken($mitoken)){
+         
+          $resp= new Response();
+          $resp->getBody()->write($existingContent);
+        //  return $resp;
+          
+             
+      }else{
+        $response->getBody()->write("No autorizado");
+      }
+      return $respone;
+    }
+} 
